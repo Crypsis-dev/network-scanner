@@ -95,7 +95,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ---
 
-**Author**: Manus AI
+**Author**: Siddharth Sid
 **Date**: February 8, 2026
 
 ## Running on Termux (Android)
