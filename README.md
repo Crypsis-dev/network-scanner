@@ -72,6 +72,40 @@ python3 analyzer.py
 
 This will generate a `scan_analysis_report.png` file containing charts of the scanned data.
 
+## Running on Termux (Android)
+
+Running this tool on Termux requires specific steps to install complex libraries like `pandas` and `numpy`.
+
+### 1. Install System Dependencies
+Open Termux and run:
+```bash
+pkg update && pkg upgrade
+pkg install python git libpcap libpcap-dev binutils python-apt make clang
+```
+
+### 2. Install Pandas and Numpy
+Pandas and Numpy can be difficult to install via standard `pip` on Termux. It is recommended to use the `tur-repo` which provides pre-built wheels:
+```bash
+pkg install tur-repo
+pkg install python-numpy python-pandas
+```
+Alternatively, if you want to install via pip (takes longer and requires more setup):
+```bash
+pkg install ndk-sysroot zlib libjpeg-turbo
+pip install numpy pandas
+```
+
+### 3. Clone and Setup
+```bash
+git clone https://github.com/Crypsis-dev/network-scanner.git
+cd network-scanner
+pip install -r requirements.txt
+```
+
+### 4. Wi-Fi Scanning on Termux (Limitations)
+*   **Monitor Mode**: Most Android devices do **not** support Wi-Fi monitor mode without rooting and custom kernels. Wi-Fi sniffing likely won't work on standard devices.
+*   **Bluetooth**: Bluetooth scanning should work if Termux has location/bluetooth permissions.
+
 ## Understanding the Output
 
 *   **`wifi_scan_results.csv`**: Contains timestamps, MAC addresses of devices sending probe requests, and the SSIDs they are looking for.
@@ -97,61 +131,3 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 **Author**: Siddharth Sid
 **Date**: February 8, 2026
-
-## Running on Termux (Android)
-
-Running this tool on Termux on an Android device has specific considerations and limitations, especially regarding Wi-Fi monitor mode. Bluetooth scanning should generally work.
-
-### Termux Prerequisites
-
-1.  **Install Termux**: Download and install Termux from F-Droid or Google Play Store.
-2.  **Install Python and Git**: Inside Termux, install Python and Git:
-    ```bash
-    pkg update && pkg upgrade
-    pkg install python git
-    ```
-3.  **Install `scapy` dependencies**: `scapy` might require `libcap` and `libpcap` development headers. Install them using:
-    ```bash
-    pkg install libpcap libpcap-dev
-    ```
-4.  **Grant Storage Permission**: Allow Termux to access storage:
-    ```bash
-    termux-setup-storage
-    ```
-
-### Termux Setup and Usage
-
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/Crypsis-dev/network-scanner.git
-    cd network-scanner
-    ```
-2.  **Install Python Libraries**:
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Note: `bleak` might require `python-dev` and `build-essential` packages, which can be installed via `pkg install python-dev build-essential` if you encounter issues.*
-
-3.  **Wi-Fi Scanning on Termux (Limitations)**:
-    *   **Monitor Mode**: Most Android devices do **not** support Wi-Fi monitor mode without rooting the device and using specialized kernels or external hardware. Therefore, the Wi-Fi sniffing (`scanner.py`) functionality for capturing probe requests is unlikely to work out-of-the-box on a standard Termux installation.
-    *   If you have a rooted device and a custom ROM that enables monitor mode, you might be able to use tools like `airmon-ng` (if available for Termux) or directly interact with the wireless interface. This is an advanced setup and beyond the scope of this basic guide.
-
-4.  **Bluetooth Scanning on Termux**:
-    *   Bluetooth scanning using `bleak` should work on Termux, provided your device's Bluetooth is enabled and Termux has the necessary permissions.
-    *   Run the scanner (only Bluetooth part will be effective without monitor mode for Wi-Fi):
-        ```bash
-        python3 scanner.py
-        ```
-    *   Press `Ctrl+C` to stop the scan and save data.
-
-5.  **Analyze the Data**:
-    ```bash
-    python3 analyzer.py
-    ```
-    This will generate `scan_analysis_report.png` in your current directory.
-
-### Termux Specific Notes
-
-*   **Rooting**: Achieving full Wi-Fi packet capture capabilities (like monitor mode) on Android typically requires rooting your device and potentially flashing a custom kernel that supports packet injection/monitor mode. This carries risks and is not recommended for novice users.
-*   **External Adapters**: Some external USB Wi-Fi adapters that support monitor mode might work with Termux if your device supports USB OTG and you have the correct drivers/kernel modules installed. This is also an advanced setup.
-*   **Permissions**: Ensure Termux has all necessary permissions (especially location and Bluetooth) for the Bluetooth scanner to function correctly.
